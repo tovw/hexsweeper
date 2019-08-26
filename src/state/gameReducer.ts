@@ -13,6 +13,7 @@ export interface GameState {
   totalMineCount: number;
   mineIndexes: number[];
   status: GameStatus;
+  neighbourMineCounts: Record<number, number>;
 }
 
 const initial: GameState = {
@@ -20,7 +21,8 @@ const initial: GameState = {
   gridHeight: 10,
   totalMineCount: 25,
   mineIndexes: [],
-  status: GameStatus.IDLE
+  status: GameStatus.IDLE,
+  neighbourMineCounts: {}
 };
 
 export default function gameReducer(
