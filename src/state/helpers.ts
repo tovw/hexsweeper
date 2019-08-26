@@ -33,11 +33,9 @@ export const getNeighbours = (
   return adjacent;
 };
 
-const intersection = <T extends {}>(a: T[], b: T[]) =>
-  a.filter(x => b.includes(x));
+const intersection = <T>(a: T[], b: T[]) => a.filter(x => b.includes(x));
 
-const difference = <T extends {}>(a: T[], b: T[]) =>
-  a.filter(x => !b.includes(x));
+const difference = <T>(a: T[], b: T[]) => a.filter(x => !b.includes(x));
 
 export const getRandomMineIndexes = (
   gridWidth: number,
