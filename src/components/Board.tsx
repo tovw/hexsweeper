@@ -1,9 +1,15 @@
 import React, { FC } from 'react';
+import { useSelector } from 'react-redux';
+import { GameState } from '../state/gameReducer';
 import { Tile } from './Tile';
 
 export const Board: FC = () => {
-  const gridWidth = 13;
-  const gridHeight = 10;
+  const gridHeight = useSelector<{ game: GameState }, number>(
+    s => s.game.gridHeight
+  );
+  const gridWidth = useSelector<{ game: GameState }, number>(
+    s => s.game.gridWidth
+  );
   const rows = Array.from({ length: gridHeight * gridWidth });
 
   return (
