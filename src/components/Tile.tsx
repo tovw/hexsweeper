@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import { Hexagon } from './Hexagon';
-import { useSelector, useDispatch } from 'react-redux';
-import { GameState } from '../state/gameReducer';
 import { motion } from 'framer-motion';
+import React, { FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ActionTypes } from '../state/gameActions';
+import { GameState } from '../state/gameReducer';
+import { Hexagon } from './Hexagon';
 
 interface TileProps {
   x: number;
@@ -21,22 +21,16 @@ const toRoman = (integer: number): string => {
   switch (integer) {
     case 1:
       return 'I';
-
     case 2:
       return 'II';
-
     case 3:
       return 'III';
-
     case 4:
       return 'IV';
-
     case 5:
       return 'V';
-
     case 6:
       return 'VI';
-
     default:
       return '';
   }
@@ -45,24 +39,23 @@ const toRoman = (integer: number): string => {
 const toColor = (count?: number) => {
   switch (count) {
     case undefined:
-      return 'white';
+      return '#fff';
     case 0:
       return '#888';
     case 1:
-      return 'pink';
+      return '#faa';
     case 2:
-      return 'red';
+      return '#f99';
     case 3:
-      return 'crimson';
+      return '#f77';
     case 4:
-      return 'yellow';
+      return '#f55';
     case 5:
-      return 'green';
+      return '#f33';
     case 6:
-      return 'blue';
-
+      return '#a11';
     default:
-      return 'orange';
+      return '#000';
   }
 };
 
@@ -71,6 +64,10 @@ export const Tile: FC<TileProps> = ({ x, y, index }) => {
     { game: GameState },
     number | undefined
   >(s => s.game.neighbourMineCounts[index]);
+
+  const rippleDelay = useSelector<{ game: GameState }, number | undefined>(
+    s => s.game.rippleEffectDelays[index]
+  );
 
   const dispatch = useDispatch();
   const flip = () =>
@@ -82,8 +79,11 @@ export const Tile: FC<TileProps> = ({ x, y, index }) => {
       onClick={flip}
     >
       <Hexagon
-        style={{ fill: toColor(neigbouringMineCount) }}
-        initial={{}}
+        animate={{
+          fill: toColor(neigbouringMineCount),
+          transition: { delay: rippleDelay && rippleDelay / 10 }
+        }}
+        initial={{ fill: toColor() }}
       ></Hexagon>
       <text
         x="150"

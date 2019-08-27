@@ -69,25 +69,42 @@ export const flipTile = (
   mineIndexes: number[],
   gridWidth: number,
   gridHeight: number,
-  neigbourMineCounts: Record<number, number>
-): Record<number, number> => {
+  neighbourMineCounts: Record<number, number>,
+  rippleEffectDelays: Record<number, number>
+): {
+  neighbourMineCounts: Record<number, number>;
+  rippleEffectDelays: Record<number, number>;
+} => {
   if (mineIndexes.includes(flipIndex)) {
-    return mineIndexes.reduce((acc, val) => {
-      acc[val] = 7;
-      return acc;
-    }, neigbourMineCounts);
+    return {
+      neighbourMineCounts: mineIndexes.reduce((acc, val) => {
+        acc[val] = 7;
+        return acc;
+      }, neighbourMineCounts),
+      rippleEffectDelays
+    };
   }
 
   const neighbours = getNeighbours(gridWidth, gridHeight, flipIndex);
   const neigbourMineCount = intersection(neighbours, mineIndexes).length;
-  neigbourMineCounts[flipIndex] = neigbourMineCount;
+  neighbourMineCounts[flipIndex] = neigbourMineCount;
+  const distances = [[flipIndex]];
 
   if (neigbourMineCount === 0) {
-    //TODO: split to 2 functions
+    distances.push([
+      ...difference(neighbours, Object.keys(neighbourMineCounts).map(i => +i))
+    ]);
+
     let front = [...neighbours];
-    while (front.length) {
+    let nextLayer: number[] = [];
+    while (front.length || nextLayer.length) {
+      if (!front.length) {
+        front = [...nextLayer];
+        distances.push([...nextLayer]);
+        nextLayer = [];
+      }
       const current = front.pop()!;
-      if (neigbourMineCounts[current] !== undefined) {
+      if (neighbourMineCounts[current] !== undefined) {
         continue;
       }
       const currentNeighbours = getNeighbours(gridWidth, gridHeight, current);
@@ -95,23 +112,34 @@ export const flipTile = (
         currentNeighbours,
         mineIndexes
       ).length;
-      neigbourMineCounts[current] = currentNeighbourMineCount;
+      neighbourMineCounts[current] = currentNeighbourMineCount;
       if (!currentNeighbourMineCount) {
-        front = front.concat(
-          difference(
-            difference(
-              currentNeighbours,
-              Object.keys(neigbourMineCounts).map(i => +i)
-            ),
-
-            front
-          )
+        nextLayer = nextLayer.concat(
+          difference(currentNeighbours, [
+            ...Object.keys(neighbourMineCounts).map(i => +i),
+            ...front,
+            ...nextLayer
+          ])
         );
       }
     }
   }
 
-  return { ...neigbourMineCounts };
+  rippleEffectDelays = distances.reduce(
+    (acc, arr, i) => ({
+      ...acc,
+      ...arr.reduce(
+        (acc, val) => {
+          acc[val] = i;
+          return acc;
+        },
+        {} as Record<number, number>
+      )
+    }),
+    rippleEffectDelays
+  );
+
+  return { neighbourMineCounts, rippleEffectDelays };
 };
 
 export const getGameStatus = (

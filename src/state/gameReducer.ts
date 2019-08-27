@@ -1,5 +1,5 @@
 import { ActionTypes, GameAction } from './gameActions';
-import { getRandomMineIndexes, flipTile, getGameStatus } from './helpers';
+import { flipTile, getGameStatus, getRandomMineIndexes } from './helpers';
 
 export enum GameStatus {
   IDLE,
@@ -15,6 +15,7 @@ export interface GameState {
   mineIndexes: number[];
   status: GameStatus;
   neighbourMineCounts: Record<number, number>;
+  rippleEffectDelays: Record<number, number>;
 }
 
 const initial: GameState = {
@@ -23,7 +24,8 @@ const initial: GameState = {
   totalMineCount: 25,
   mineIndexes: [],
   status: GameStatus.IDLE,
-  neighbourMineCounts: {}
+  neighbourMineCounts: {},
+  rippleEffectDelays: {}
 };
 
 const handleFlipTile = (
@@ -33,7 +35,8 @@ const handleFlipTile = (
     totalMineCount,
     neighbourMineCounts,
     mineIndexes,
-    status
+    status,
+    rippleEffectDelays
   }: GameState,
   tileIndex: number
 ): GameState => {
@@ -46,19 +49,23 @@ const handleFlipTile = (
     );
   }
 
-  neighbourMineCounts = flipTile(
+  const {
+    neighbourMineCounts: newCounts,
+    rippleEffectDelays: newRipples
+  } = flipTile(
     tileIndex,
     mineIndexes,
     gridWidth,
     gridHeight,
-    neighbourMineCounts
+    neighbourMineCounts,
+    rippleEffectDelays
   );
 
   status = getGameStatus(
     gridWidth,
     gridHeight,
     mineIndexes,
-    neighbourMineCounts,
+    newCounts,
     tileIndex
   );
 
@@ -67,8 +74,9 @@ const handleFlipTile = (
     gridHeight,
     mineIndexes,
     totalMineCount,
-    neighbourMineCounts,
-    status
+    neighbourMineCounts: newCounts,
+    status,
+    rippleEffectDelays: newRipples
   };
 };
 
