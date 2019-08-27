@@ -1,3 +1,5 @@
+import { GameStatus } from './gameReducer';
+
 export const getNeighbours = (
   gridWidth: number,
   gridHeight: number,
@@ -45,11 +47,11 @@ export const getRandomMineIndexes = (
 ) => {
   //Generate an "island" around the first click index
   const reservedIndexes = [
-    ...getNeighbours(gridHeight, gridWidth, firstFlipIndex),
+    ...getNeighbours(gridWidth, gridHeight, firstFlipIndex),
     firstFlipIndex
   ];
 
-  const mineIndexes = new Set();
+  const mineIndexes = new Set<number>();
   const gridSize = gridHeight * gridWidth;
   //TODO, array of available indexes, shuffle, take n
   while (mineIndexes.size !== mineCount) {
@@ -59,7 +61,7 @@ export const getRandomMineIndexes = (
     }
   }
 
-  return mineIndexes;
+  return Array.from(mineIndexes);
 };
 
 export const flipTile = (
@@ -70,38 +72,64 @@ export const flipTile = (
   neigbourMineCounts: Record<number, number>
 ): Record<number, number> => {
   if (mineIndexes.includes(flipIndex)) {
-    return { ...neigbourMineCounts, [flipIndex]: -1 };
+    return mineIndexes.reduce((acc, val) => {
+      acc[val] = 7;
+      return acc;
+    }, neigbourMineCounts);
   }
 
   const neighbours = getNeighbours(gridWidth, gridHeight, flipIndex);
   const neigbourMineCount = intersection(neighbours, mineIndexes).length;
+  neigbourMineCounts[flipIndex] = neigbourMineCount;
 
-  if (neigbourMineCount !== 0) {
-    return { ...neigbourMineCounts, [flipIndex]: neigbourMineCount };
-  }
+  if (neigbourMineCount === 0) {
+    //TODO: split to 2 functions
+    let front = [...neighbours];
+    while (front.length) {
+      const current = front.pop()!;
+      if (neigbourMineCounts[current] !== undefined) {
+        continue;
+      }
+      const currentNeighbours = getNeighbours(gridWidth, gridHeight, current);
+      const currentNeighbourMineCount = intersection(
+        currentNeighbours,
+        mineIndexes
+      ).length;
+      neigbourMineCounts[current] = currentNeighbourMineCount;
+      if (!currentNeighbourMineCount) {
+        front = front.concat(
+          difference(
+            difference(
+              currentNeighbours,
+              Object.keys(neigbourMineCounts).map(i => +i)
+            ),
 
-  //TODO: split to 2 functions
-  let front = [...neighbours];
-  while (front.length) {
-    const current = front.pop()!;
-    if (neigbourMineCounts[current] !== undefined) {
-      continue;
-    }
-    const currentNeighbours = getNeighbours(gridWidth, gridHeight, current);
-    const currentNeighbourMineCount = intersection(
-      currentNeighbours,
-      mineIndexes
-    ).length;
-    neigbourMineCounts[current] = currentNeighbourMineCount;
-    if (!currentNeighbourMineCount) {
-      front = front.concat(
-        difference(
-          difference(neighbours, Object.keys(neigbourMineCounts).map(i => +i)),
-          front
-        )
-      );
+            front
+          )
+        );
+      }
     }
   }
 
   return { ...neigbourMineCounts };
+};
+
+export const getGameStatus = (
+  gridWidth: number,
+  gridHeight: number,
+  mineIndexes: number[],
+  neigbourMineCount: Record<number, number>,
+  lastFlippedIndex: number
+) => {
+  if (mineIndexes.includes(lastFlippedIndex)) {
+    return GameStatus.LOST;
+  }
+  if (
+    Object.keys(neigbourMineCount).length ===
+    gridWidth * gridHeight - mineIndexes.length
+  ) {
+    return GameStatus.WON;
+  }
+
+  return GameStatus.STARTED;
 };

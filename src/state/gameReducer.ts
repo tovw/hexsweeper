@@ -1,6 +1,7 @@
 import { ActionTypes, GameAction } from './gameActions';
+import { getRandomMineIndexes, flipTile, getGameStatus } from './helpers';
 
-enum GameStatus {
+export enum GameStatus {
   IDLE,
   STARTED,
   WON,
@@ -25,6 +26,52 @@ const initial: GameState = {
   neighbourMineCounts: {}
 };
 
+const handleFlipTile = (
+  {
+    gridWidth,
+    gridHeight,
+    totalMineCount,
+    neighbourMineCounts,
+    mineIndexes,
+    status
+  }: GameState,
+  tileIndex: number
+): GameState => {
+  if (status === GameStatus.IDLE) {
+    mineIndexes = getRandomMineIndexes(
+      gridWidth,
+      gridHeight,
+      totalMineCount,
+      tileIndex
+    );
+  }
+
+  neighbourMineCounts = flipTile(
+    tileIndex,
+    mineIndexes,
+    gridWidth,
+    gridHeight,
+    neighbourMineCounts
+  );
+
+  status = getGameStatus(
+    gridWidth,
+    gridHeight,
+    mineIndexes,
+    neighbourMineCounts,
+    tileIndex
+  );
+
+  return {
+    gridWidth,
+    gridHeight,
+    mineIndexes,
+    totalMineCount,
+    neighbourMineCounts,
+    status
+  };
+};
+
 export default function gameReducer(
   state: GameState = initial,
   action: GameAction
@@ -33,7 +80,7 @@ export default function gameReducer(
     case ActionTypes.NEW_GAME:
       return initial;
     case ActionTypes.FLIP_TILE_AT_INDEX:
-      return state;
+      return handleFlipTile(state, action.tileIndex);
   }
   return state;
 }

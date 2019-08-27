@@ -24,7 +24,14 @@ export const Board: FC = () => {
       }}
     >
       {rows.map((_, i) => {
-        return <Tile key={i} x={i % gridWidth} y={Math.floor(i / gridWidth)} />;
+        return (
+          <Tile
+            key={i}
+            index={i}
+            x={i % gridWidth}
+            y={Math.floor(i / gridWidth)}
+          />
+        );
       })}
     </svg>
   );
