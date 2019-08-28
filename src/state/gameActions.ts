@@ -1,24 +1,50 @@
-export enum ActionTypes {
+export enum GameActionTypes {
   NEW_GAME,
-  FLIP_TILE_AT_INDEX
+  FLIP_TILE_AT_INDEX,
+  PAUSE_TIMER,
+  RESUME_TIMER
 }
 
 interface NewGameAction {
-  type: ActionTypes.NEW_GAME;
+  type: GameActionTypes.NEW_GAME;
 }
 
 interface FlipTileAction {
-  type: ActionTypes.FLIP_TILE_AT_INDEX;
+  type: GameActionTypes.FLIP_TILE_AT_INDEX;
   tileIndex: number;
 }
 
-export type GameAction = NewGameAction | FlipTileAction;
+interface PauseTimerAction {
+  type: GameActionTypes.PAUSE_TIMER;
+  timestamp: number;
+}
+
+interface ResumeTimerAction {
+  type: GameActionTypes.RESUME_TIMER;
+  timestamp: number;
+}
+
+export type GameAction =
+  | NewGameAction
+  | FlipTileAction
+  | PauseTimerAction
+  | ResumeTimerAction;
 
 export const createFlipAction = (tileIndex: number) => ({
-  type: ActionTypes.FLIP_TILE_AT_INDEX,
+  type: GameActionTypes.FLIP_TILE_AT_INDEX,
   tileIndex
 });
 
-export const createNewGame = () => ({
-  type: ActionTypes.NEW_GAME
+export const createNewGameAction = () => ({
+  type: GameActionTypes.NEW_GAME
+});
+
+export const createPauseAction = () => ({
+  type: GameActionTypes.PAUSE_TIMER,
+  timestamp: Date.now()
+});
+
+export const createResumeAction = () => ({
+  type: GameActionTypes.RESUME_TIMER,
+  timestamp: Date.now()
 });

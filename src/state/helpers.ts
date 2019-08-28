@@ -1,4 +1,4 @@
-import { GameStatus } from './gameReducer';
+import { GameStatus, Timer } from './gameReducer';
 
 export const getNeighbours = (
   gridWidth: number,
@@ -160,4 +160,28 @@ export const getGameStatus = (
   }
 
   return GameStatus.STARTED;
+};
+
+export const pauseTimer = (timer: Timer, pausedAt: number): Timer => {
+  if (!timer.isRunning) return timer;
+  return { startedAt: timer.startedAt, pausedAt, isRunning: false };
+};
+
+export const resumeTimer = (timer: Timer, resumedAt: number): Timer => {
+  if (timer.isRunning) return timer;
+  return {
+    startedAt: resumedAt - (timer.pausedAt - timer.startedAt),
+    pausedAt: 0,
+    isRunning: true
+  };
+};
+
+export const startTimer = (): Timer => ({
+  startedAt: Date.now(),
+  pausedAt: 0,
+  isRunning: true
+});
+
+export const assertNever = (x: never): never => {
+  throw new Error('Invalid Action: ' + x);
 };

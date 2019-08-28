@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ActionTypes } from '../state/gameActions';
+import { createFlipAction } from '../state/gameActions';
 import { GameState } from '../state/gameReducer';
 import { color, mineCountColorMap } from '../utils/color';
 import { toRoman } from '../utils/toRoman';
@@ -91,8 +91,7 @@ export const Tile: FC<TileProps> = ({ x, y, index }) => {
   );
 
   const dispatch = useDispatch();
-  const flip = () =>
-    dispatch({ type: ActionTypes.FLIP_TILE_AT_INDEX, tileIndex: index });
+  const flip = () => dispatch(createFlipAction(index));
 
   return (
     <motion.g

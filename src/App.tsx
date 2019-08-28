@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Board } from './components/Board';
+import { GameInfo } from './components/GameInfo';
 import store from './state';
 
 const App: React.FC = () => {
@@ -9,9 +10,10 @@ const App: React.FC = () => {
       <div
         style={{
           maxWidth: '50rem',
-          margin: '5rem auto'
+          margin: '1rem auto'
         }}
       >
+        <GameInfo />
         <Board></Board>
       </div>
     </Provider>

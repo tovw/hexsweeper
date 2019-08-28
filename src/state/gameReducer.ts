@@ -1,11 +1,24 @@
-import { ActionTypes, GameAction } from './gameActions';
-import { flipTile, getGameStatus, getRandomMineIndexes } from './helpers';
+import { GameAction, GameActionTypes } from './gameActions';
+import {
+  flipTile,
+  getGameStatus,
+  getRandomMineIndexes,
+  pauseTimer,
+  resumeTimer,
+  startTimer
+} from './helpers';
 
 export enum GameStatus {
   IDLE,
   STARTED,
   WON,
   LOST
+}
+
+export interface Timer {
+  isRunning: boolean;
+  startedAt: number;
+  pausedAt: number;
 }
 
 export interface GameState {
@@ -16,6 +29,7 @@ export interface GameState {
   status: GameStatus;
   neighbourMineCounts: Record<number, number>;
   rippleEffectDelays: Record<number, number>;
+  timer: Timer;
 }
 
 const initial: GameState = {
@@ -25,7 +39,8 @@ const initial: GameState = {
   mineIndexes: [],
   status: GameStatus.IDLE,
   neighbourMineCounts: {},
-  rippleEffectDelays: {}
+  rippleEffectDelays: {},
+  timer: { isRunning: false, startedAt: 0, pausedAt: 0 }
 };
 
 const handleFlipTile = (
@@ -36,7 +51,8 @@ const handleFlipTile = (
     neighbourMineCounts,
     mineIndexes,
     status,
-    rippleEffectDelays
+    rippleEffectDelays,
+    timer
   }: GameState,
   tileIndex: number
 ): GameState => {
@@ -47,6 +63,7 @@ const handleFlipTile = (
       totalMineCount,
       tileIndex
     );
+    timer = startTimer();
   }
 
   const {
@@ -76,7 +93,8 @@ const handleFlipTile = (
     totalMineCount,
     neighbourMineCounts: newCounts,
     status,
-    rippleEffectDelays: newRipples
+    rippleEffectDelays: newRipples,
+    timer
   };
 };
 
@@ -85,10 +103,19 @@ export default function gameReducer(
   action: GameAction
 ): GameState {
   switch (action.type) {
-    case ActionTypes.NEW_GAME:
+    case GameActionTypes.NEW_GAME:
       return initial;
-    case ActionTypes.FLIP_TILE_AT_INDEX:
+
+    case GameActionTypes.FLIP_TILE_AT_INDEX:
       return handleFlipTile(state, action.tileIndex);
+
+    case GameActionTypes.PAUSE_TIMER:
+      return { ...state, timer: pauseTimer(state.timer, action.timestamp) };
+
+    case GameActionTypes.RESUME_TIMER:
+      return { ...state, timer: resumeTimer(state.timer, action.timestamp) };
+
+    default:
+      return state;
   }
-  return state;
 }
