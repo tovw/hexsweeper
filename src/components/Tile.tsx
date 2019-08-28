@@ -3,6 +3,9 @@ import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionTypes } from '../state/gameActions';
 import { GameState } from '../state/gameReducer';
+import { color, mineCountColorMap } from '../utils/color';
+import { toRoman } from '../utils/toRoman';
+import { viewBox } from './Board';
 import { Hexagon } from './Hexagon';
 
 interface TileProps {
@@ -17,80 +20,63 @@ const indexToGridCoordinateTransform = (x: number, y: number) => ({
   translateY: y * 275 + (x % 2 === 0 ? 70 : -70)
 });
 
-const toRoman = (integer: number): string => {
-  switch (integer) {
-    case 1:
-      return 'I';
-    case 2:
-      return 'II';
-    case 3:
-      return 'III';
-    case 4:
-      return 'IV';
-    case 5:
-      return 'V';
-    case 6:
-      return 'VI';
-    default:
-      return '';
+const wrapperVariants = {
+  dealFrom: () => ({
+    translateX: viewBox.width / 2 - 300,
+    translateY: viewBox.height / 2 - 260
+  }),
+  dealTo: (to: { translateX: number; translateY: number; index: number }) => {
+    return {
+      translateX: to.translateX,
+      translateY: to.translateY,
+      transition: {
+        delay: to.index / 100
+      }
+    };
   }
 };
 
-const toColor = (count?: number) => {
-  switch (count) {
-    case undefined:
-      return '#fff';
-    case 0:
-      return '#888';
-    case 1:
-      return '#faa';
-    case 2:
-      return '#f99';
-    case 3:
-      return '#f77';
-    case 4:
-      return '#f55';
-    case 5:
-      return '#f33';
-    case 6:
-      return '#a11';
-    default:
-      return '#000';
-  }
-};
-
-const variants = {
-  '0': (delay: number) => ({
+const hexagonVariants = {
+  initial: { fill: color.tile, opacity: 1 },
+  0: (delay: number) => ({
     opacity: 0,
     scale: 2,
     transition: { duration: 0.5, delay: delay / 10 }
   }),
-  '1': (delay: number) => ({
-    fill: toColor(1),
+  1: (delay: number) => ({
+    fill: mineCountColorMap[1],
     transition: { delay: delay / 10 }
   }),
-  '2': (delay: number) => ({
-    fill: toColor(2),
+  2: (delay: number) => ({
+    fill: mineCountColorMap[2],
     transition: { delay: delay / 10 }
   }),
-  '3': (delay: number) => ({
-    fill: toColor(3),
+  3: (delay: number) => ({
+    fill: mineCountColorMap[3],
     transition: { delay: delay / 10 }
   }),
-  '4': (delay: number) => ({
-    fill: toColor(4),
+  4: (delay: number) => ({
+    fill: mineCountColorMap[4],
     transition: { delay: delay / 10 }
   }),
-  '5': (delay: number) => ({
-    fill: toColor(5),
+  5: (delay: number) => ({
+    fill: mineCountColorMap[5],
     transition: { delay: delay / 10 }
   }),
-  '6': (delay: number) => ({
-    fill: toColor(6),
+  6: (delay: number) => ({
+    fill: mineCountColorMap[6],
     transition: { delay: delay / 10 }
   }),
-  '7': () => ({
-    fill: toColor(7)
+  7: () => ({
+    fill: mineCountColorMap[7]
+  })
+};
+
+const countTextVariants = {
+  hidden: () => ({ opacity: 0 }),
+  visible: (delay: number) => ({
+    opacity: 1,
+    transition: { delay: delay / 10 }
   })
 };
 
@@ -110,35 +96,36 @@ export const Tile: FC<TileProps> = ({ x, y, index }) => {
 
   return (
     <motion.g
-      style={{ ...indexToGridCoordinateTransform(x, y) }}
+      variants={wrapperVariants}
+      initial="dealFrom"
+      animate="dealTo"
+      custom={{
+        ...indexToGridCoordinateTransform(x, y),
+        index
+      }}
       onClick={flip}
     >
       <Hexagon
-        variants={variants}
+        variants={hexagonVariants}
         custom={rippleDelay}
-        animate={String(neigbouringMineCount)}
-        style={{
-          originX: 0.5,
-          originY: 0.5
-        }}
-        initial={{ fill: toColor(), opacity: 1 }}
+        animate={`${neigbouringMineCount}`}
+        initial="initial"
       ></Hexagon>
 
       <motion.text
         style={{
-          x: '150',
-          y: '200',
+          x: 150,
+          y: 190,
           textAnchor: 'middle',
-          fill: 'black',
-          stroke: 'black',
-          fontSize: '150',
+          fill: color.text,
+          stroke: color.text,
+          fontSize: 150,
           userSelect: 'none'
         }}
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: neigbouringMineCount ? 1 : 0,
-          transition: { delay: rippleDelay && rippleDelay / 10 }
-        }}
+        variants={countTextVariants}
+        custom={rippleDelay}
+        initial="hidden"
+        animate={neigbouringMineCount === undefined ? undefined : 'visible'}
       >
         {!!neigbouringMineCount && toRoman(neigbouringMineCount)}
       </motion.text>

@@ -1,7 +1,10 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { GameState } from '../state/gameReducer';
+import { color } from '../utils/color';
 import { Tile } from './Tile';
+
+export const viewBox = { minX: -50, minY: -100, width: 3200, height: 3000 };
 
 export const Board: FC = () => {
   const gridHeight = useSelector<{ game: GameState }, number>(
@@ -14,13 +17,13 @@ export const Board: FC = () => {
 
   return (
     <svg
-      viewBox="-50 -100 3200 3000"
+      viewBox={`${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}`}
       preserveAspectRatio="xMinYMid meet"
       style={{
         width: '100%',
         maxWidth: '50rem',
         height: 'auto',
-        background: '#888'
+        background: color.background
       }}
     >
       {rows.map((_, i) => {

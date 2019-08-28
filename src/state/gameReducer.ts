@@ -21,7 +21,7 @@ export interface GameState {
 const initial: GameState = {
   gridWidth: 13,
   gridHeight: 10,
-  totalMineCount: 5,
+  totalMineCount: 25,
   mineIndexes: [],
   status: GameStatus.IDLE,
   neighbourMineCounts: {},
