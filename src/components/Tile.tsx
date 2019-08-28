@@ -59,6 +59,41 @@ const toColor = (count?: number) => {
   }
 };
 
+const variants = {
+  '0': (delay: number) => ({
+    opacity: 0,
+    scale: 2,
+    transition: { duration: 0.5, delay: delay / 10 }
+  }),
+  '1': (delay: number) => ({
+    fill: toColor(1),
+    transition: { delay: delay / 10 }
+  }),
+  '2': (delay: number) => ({
+    fill: toColor(2),
+    transition: { delay: delay / 10 }
+  }),
+  '3': (delay: number) => ({
+    fill: toColor(3),
+    transition: { delay: delay / 10 }
+  }),
+  '4': (delay: number) => ({
+    fill: toColor(4),
+    transition: { delay: delay / 10 }
+  }),
+  '5': (delay: number) => ({
+    fill: toColor(5),
+    transition: { delay: delay / 10 }
+  }),
+  '6': (delay: number) => ({
+    fill: toColor(6),
+    transition: { delay: delay / 10 }
+  }),
+  '7': () => ({
+    fill: toColor(7)
+  })
+};
+
 export const Tile: FC<TileProps> = ({ x, y, index }) => {
   const neigbouringMineCount = useSelector<
     { game: GameState },
@@ -79,22 +114,34 @@ export const Tile: FC<TileProps> = ({ x, y, index }) => {
       onClick={flip}
     >
       <Hexagon
+        variants={variants}
+        custom={rippleDelay}
+        animate={String(neigbouringMineCount)}
+        style={{
+          originX: 0.5,
+          originY: 0.5
+        }}
+        initial={{ fill: toColor(), opacity: 1 }}
+      ></Hexagon>
+
+      <motion.text
+        style={{
+          x: '150',
+          y: '200',
+          textAnchor: 'middle',
+          fill: 'black',
+          stroke: 'black',
+          fontSize: '150',
+          userSelect: 'none'
+        }}
+        initial={{ opacity: 0 }}
         animate={{
-          fill: toColor(neigbouringMineCount),
+          opacity: neigbouringMineCount ? 1 : 0,
           transition: { delay: rippleDelay && rippleDelay / 10 }
         }}
-        initial={{ fill: toColor() }}
-      ></Hexagon>
-      <text
-        x="150"
-        y="200"
-        textAnchor="middle"
-        fill="black"
-        stroke="black"
-        fontSize="150"
       >
         {!!neigbouringMineCount && toRoman(neigbouringMineCount)}
-      </text>
+      </motion.text>
     </motion.g>
   );
 };
