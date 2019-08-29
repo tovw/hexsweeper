@@ -41,7 +41,7 @@ export const Timer: FC = () => {
           fontSize: 70,
           margin: '0 auto',
           userSelect: 'none',
-          color: color.tile
+          color: color.primary
         }}
       >
         {formatTime(elapsedTime)}

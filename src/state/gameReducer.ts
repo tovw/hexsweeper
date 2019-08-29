@@ -1,14 +1,8 @@
 import { GameAction, GameActionTypes } from './gameActions';
-import {
-  flipTile,
-  getGameStatus,
-  getRandomMineIndexes,
-  pauseTimer,
-  resumeTimer,
-  startTimer
-} from './helpers';
+import { flipTile, getGameStatus, getRandomMineIndexes, pauseTimer, startTimer, toggleDifficulty, toggleTimer } from './helpers';
 
 export enum GameStatus {
+  MENU,
   IDLE,
   STARTED,
   WON,
@@ -24,30 +18,33 @@ export interface Timer {
 export interface GameState {
   gridWidth: number;
   gridHeight: number;
-  totalMineCount: number;
   mineIndexes: number[];
   status: GameStatus;
   neighbourMineCounts: Record<number, number>;
   rippleEffectDelays: Record<number, number>;
   timer: Timer;
+  difficulty: 0 | 1 | 2;
+  difficultyMineCounts: Record<0 | 1 | 2, number>;
 }
 
 const initial: GameState = {
   gridWidth: 13,
   gridHeight: 10,
-  totalMineCount: 25,
   mineIndexes: [],
-  status: GameStatus.IDLE,
+  status: GameStatus.MENU,
   neighbourMineCounts: {},
   rippleEffectDelays: {},
-  timer: { isRunning: false, startedAt: 0, pausedAt: 0 }
+  timer: { isRunning: false, startedAt: 0, pausedAt: 0 },
+  difficulty: 1,
+  difficultyMineCounts: { 0: 25, 1: 35, 2: 45 }
 };
 
 const handleFlipTile = (
   {
     gridWidth,
     gridHeight,
-    totalMineCount,
+    difficulty,
+    difficultyMineCounts,
     neighbourMineCounts,
     mineIndexes,
     status,
@@ -60,7 +57,7 @@ const handleFlipTile = (
     mineIndexes = getRandomMineIndexes(
       gridWidth,
       gridHeight,
-      totalMineCount,
+      difficultyMineCounts[difficulty],
       tileIndex
     );
     timer = startTimer();
@@ -94,11 +91,12 @@ const handleFlipTile = (
     gridWidth,
     gridHeight,
     mineIndexes,
-    totalMineCount,
     neighbourMineCounts: newCounts,
     status,
     rippleEffectDelays: newRipples,
-    timer
+    timer,
+    difficulty,
+    difficultyMineCounts
   };
 };
 
@@ -108,17 +106,19 @@ export default function gameReducer(
 ): GameState {
   switch (action.type) {
     case GameActionTypes.NEW_GAME:
-      return initial;
+      return { ...state, status: GameStatus.IDLE };
 
     case GameActionTypes.FLIP_TILE_AT_INDEX:
       return handleFlipTile(state, action.tileIndex);
 
-    case GameActionTypes.PAUSE_TIMER:
-      return { ...state, timer: pauseTimer(state.timer, action.timestamp) };
+    case GameActionTypes.TOGGLE_TIMER:
+      return { ...state, timer: toggleTimer(state.timer, action.timestamp) };
 
-    case GameActionTypes.RESUME_TIMER:
-      return { ...state, timer: resumeTimer(state.timer, action.timestamp) };
-
+    case GameActionTypes.TOGGLE_DIFFICULTY:
+      return {
+        ...state,
+        difficulty: toggleDifficulty(state.difficulty)
+      };
     default:
       return state;
   }

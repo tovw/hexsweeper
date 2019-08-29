@@ -167,13 +167,17 @@ export const pauseTimer = (timer: Timer, pausedAt: number): Timer => {
   return { startedAt: timer.startedAt, pausedAt, isRunning: false };
 };
 
-export const resumeTimer = (timer: Timer, resumedAt: number): Timer => {
+const resumeTimer = (timer: Timer, resumedAt: number): Timer => {
   if (timer.isRunning) return timer;
   return {
     startedAt: resumedAt - (timer.pausedAt - timer.startedAt),
     pausedAt: 0,
     isRunning: true
   };
+};
+
+export const toggleTimer = (timer: Timer, now: number) => {
+  return timer.isRunning ? pauseTimer(timer, now) : resumeTimer(timer, now);
 };
 
 export const startTimer = (): Timer => ({
@@ -184,4 +188,10 @@ export const startTimer = (): Timer => ({
 
 export const assertNever = (x: never): never => {
   throw new Error('Invalid Action: ' + x);
+};
+
+export const toggleDifficulty = (difficulty: 0 | 1 | 2): 0 | 1 | 2 => {
+  if (difficulty === 0) return 1;
+  if (difficulty === 1) return 2;
+  return 0;
 };

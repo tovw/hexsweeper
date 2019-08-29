@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { GameState } from '../state/gameReducer';
-import { color, mineCountColorMap } from '../utils/color';
+import { GameState, GameStatus } from '../state/gameReducer';
+import { color } from '../utils/color';
 import { Tile } from './Tile';
-import { motion } from 'framer-motion';
 
 export const viewBox = { minX: -50, minY: -100, width: 3200, height: 3000 };
 
@@ -14,6 +13,10 @@ export const Board: FC = () => {
   const gridWidth = useSelector<{ game: GameState }, number>(
     s => s.game.gridWidth
   );
+  const isPaused = useSelector<{ game: GameState }, boolean>(s => {
+    return !s.game.timer.isRunning && s.game.status === GameStatus.STARTED;
+  });
+
   const rows = Array.from({ length: gridHeight * gridWidth });
 
   return (
@@ -24,19 +27,10 @@ export const Board: FC = () => {
         width: '100%',
         maxWidth: '50rem',
         height: 'auto',
-        background: color.background
+        background: color.background,
+        filter: isPaused ? 'blur(5px) grayscale(50%)' : ''
       }}
     >
-      <motion.linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop
-          offset="0%"
-          style={{ stopColor: mineCountColorMap[1], stopOpacity: 1 }}
-        />
-        <stop
-          offset="100%"
-          style={{ stopColor: mineCountColorMap[6], stopOpacity: 1 }}
-        />
-      </motion.linearGradient>
       {rows.map((_, i) => {
         return (
           <Tile

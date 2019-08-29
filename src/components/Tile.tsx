@@ -30,14 +30,14 @@ const wrapperVariants = {
       translateX: to.translateX,
       translateY: to.translateY,
       transition: {
-        delay: to.index / 100
+        delay: to.index / 100 + 0.5
       }
     };
   }
 };
 
 const hexagonVariants = {
-  initial: { fill: color.tile, opacity: 1 },
+  initial: { fill: color.primary, opacity: 1 },
   0: (delay: number) => ({
     opacity: 0,
     scale: 2,
@@ -45,30 +45,38 @@ const hexagonVariants = {
   }),
   1: (delay: number) => ({
     fill: mineCountColorMap[1],
+    scale: 1,
     transition: { delay: delay / 10 }
   }),
   2: (delay: number) => ({
     fill: mineCountColorMap[2],
+    scale: 1,
     transition: { delay: delay / 10 }
   }),
   3: (delay: number) => ({
     fill: mineCountColorMap[3],
+    scale: 1,
     transition: { delay: delay / 10 }
   }),
   4: (delay: number) => ({
     fill: mineCountColorMap[4],
+    scale: 1,
     transition: { delay: delay / 10 }
   }),
   5: (delay: number) => ({
     fill: mineCountColorMap[5],
+    scale: 1,
     transition: { delay: delay / 10 }
   }),
   6: (delay: number) => ({
     fill: mineCountColorMap[6],
+    scale: 1,
     transition: { delay: delay / 10 }
   }),
   7: () => ({
-    fill: 'url(#grad1)'
+    fill: [color.primary, mineCountColorMap[7]],
+
+    scale: [1, 1.5, 1]
   })
 };
 
@@ -81,7 +89,7 @@ const countTextVariants = {
 };
 
 export const Tile: FC<TileProps> = ({ x, y, index }) => {
-  const neigbouringMineCount = useSelector<
+  const neighbouringMineCount = useSelector<
     { game: GameState },
     number | undefined
   >(s => s.game.neighbourMineCounts[index]);
@@ -102,12 +110,26 @@ export const Tile: FC<TileProps> = ({ x, y, index }) => {
         ...indexToGridCoordinateTransform(x, y),
         index
       }}
+      whileHover={
+        neighbouringMineCount === undefined
+          ? {
+              scale: [1.05, 0.95],
+              transition: {
+                yoyo: Infinity
+              }
+            }
+          : {}
+      }
+      style={{
+        cursor: neighbouringMineCount !== undefined ? 'default' : 'pointer',
+        scale: 1
+      }}
       onClick={flip}
     >
       <Hexagon
         variants={hexagonVariants}
         custom={rippleDelay}
-        animate={`${neigbouringMineCount}`}
+        animate={`${neighbouringMineCount}`}
         initial="initial"
       ></Hexagon>
 
@@ -124,9 +146,9 @@ export const Tile: FC<TileProps> = ({ x, y, index }) => {
         variants={countTextVariants}
         custom={rippleDelay}
         initial="hidden"
-        animate={neigbouringMineCount === undefined ? undefined : 'visible'}
+        animate={neighbouringMineCount === undefined ? undefined : 'visible'}
       >
-        {!!neigbouringMineCount && toRoman(neigbouringMineCount)}
+        {!!neighbouringMineCount && toRoman(neighbouringMineCount)}
       </motion.text>
     </motion.g>
   );

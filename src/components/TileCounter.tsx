@@ -1,19 +1,20 @@
-import React, { FC } from 'react';
-import { Hexagon } from './Hexagon';
-import { color } from '../utils/color';
 import { motion } from 'framer-motion';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { GameState } from '../state/gameReducer';
+import { color } from '../utils/color';
+import { Hexagon } from './Hexagon';
 
 const getNonMinesLeft = ({
   gridWidth,
   gridHeight,
-  totalMineCount,
+  difficulty,
+  difficultyMineCounts,
   neighbourMineCounts
 }: GameState): number =>
   gridHeight * gridWidth -
   Object.keys(neighbourMineCounts).length -
-  totalMineCount;
+  difficultyMineCounts[difficulty];
 
 export const TileCounter: FC = () => {
   const nonMinesLeft = useSelector<{ game: GameState }, number>(s =>
@@ -27,7 +28,7 @@ export const TileCounter: FC = () => {
         height: '100%'
       }}
     >
-      <Hexagon style={{ fill: color.tile }} />
+      <Hexagon style={{ fill: color.primary }} />
       <motion.text
         style={{
           x: 150,

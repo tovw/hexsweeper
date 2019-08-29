@@ -29,3 +29,9 @@ code {
   src: local('squreSans'),
     url(./fonts/square_sans_serif_7.ttf) format('truetype');
 }
+
+@font-face {
+  font-family: 'Assasin';
+  src: local('Assasin'),
+    url(./fonts/AndroidAssassin-grz1.ttf) format('truetype');
+}

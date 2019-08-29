@@ -1,8 +1,8 @@
 export enum GameActionTypes {
   NEW_GAME,
   FLIP_TILE_AT_INDEX,
-  PAUSE_TIMER,
-  RESUME_TIMER
+  TOGGLE_TIMER,
+  TOGGLE_DIFFICULTY
 }
 
 interface NewGameAction {
@@ -14,21 +14,20 @@ interface FlipTileAction {
   tileIndex: number;
 }
 
-interface PauseTimerAction {
-  type: GameActionTypes.PAUSE_TIMER;
+interface ToggleTimerAction {
+  type: GameActionTypes.TOGGLE_TIMER;
   timestamp: number;
 }
 
-interface ResumeTimerAction {
-  type: GameActionTypes.RESUME_TIMER;
-  timestamp: number;
+interface ToggleDifficultyAction {
+  type: GameActionTypes.TOGGLE_DIFFICULTY;
 }
 
 export type GameAction =
   | NewGameAction
   | FlipTileAction
-  | PauseTimerAction
-  | ResumeTimerAction;
+  | ToggleTimerAction
+  | ToggleDifficultyAction;
 
 export const createFlipAction = (tileIndex: number) => ({
   type: GameActionTypes.FLIP_TILE_AT_INDEX,
@@ -39,12 +38,11 @@ export const createNewGameAction = () => ({
   type: GameActionTypes.NEW_GAME
 });
 
-export const createPauseAction = () => ({
-  type: GameActionTypes.PAUSE_TIMER,
+export const createToggleTimerAction = () => ({
+  type: GameActionTypes.TOGGLE_TIMER,
   timestamp: Date.now()
 });
 
-export const createResumeAction = () => ({
-  type: GameActionTypes.RESUME_TIMER,
-  timestamp: Date.now()
+export const createToggleDifficultyAction = () => ({
+  type: GameActionTypes.TOGGLE_DIFFICULTY
 });
