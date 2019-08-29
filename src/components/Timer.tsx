@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { GameState } from '../state/gameReducer';
+import { color } from '../utils/color';
 
 const formatTime = (nanoSeconds: number) => {
   const seconds = Math.floor(nanoSeconds / 1000);
@@ -24,7 +25,6 @@ export const Timer: FC = () => {
 
   useEffect(() => {
     if (isRunning) {
-      console.log('setting');
       const interval = setInterval(
         () => setElapsedTime(Date.now() - startedAt),
         1000
@@ -33,5 +33,19 @@ export const Timer: FC = () => {
     }
   }, [startedAt, isRunning]);
 
-  return <div>{formatTime(elapsedTime)}</div>;
+  return (
+    <div style={{ height: '100%' }}>
+      <h2
+        style={{
+          fontFamily: 'digital',
+          fontSize: 70,
+          margin: '0 auto',
+          userSelect: 'none',
+          color: color.tile
+        }}
+      >
+        {formatTime(elapsedTime)}
+      </h2>
+    </div>
+  );
 };

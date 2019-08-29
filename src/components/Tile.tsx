@@ -68,7 +68,7 @@ const hexagonVariants = {
     transition: { delay: delay / 10 }
   }),
   7: () => ({
-    fill: mineCountColorMap[7]
+    fill: 'url(#grad1)'
   })
 };
 

@@ -86,6 +86,10 @@ const handleFlipTile = (
     tileIndex
   );
 
+  if (status !== GameStatus.STARTED) {
+    timer = pauseTimer(timer, Date.now());
+  }
+
   return {
     gridWidth,
     gridHeight,
