@@ -2,7 +2,8 @@ export enum GameActionTypes {
   NEW_GAME,
   FLIP_TILE_AT_INDEX,
   TOGGLE_TIMER,
-  TOGGLE_DIFFICULTY
+  TOGGLE_DIFFICULTY,
+  LEAVE_GAME
 }
 
 interface NewGameAction {
@@ -22,12 +23,16 @@ interface ToggleTimerAction {
 interface ToggleDifficultyAction {
   type: GameActionTypes.TOGGLE_DIFFICULTY;
 }
+interface LeaveGameAction {
+  type: GameActionTypes.LEAVE_GAME;
+}
 
 export type GameAction =
   | NewGameAction
   | FlipTileAction
   | ToggleTimerAction
-  | ToggleDifficultyAction;
+  | ToggleDifficultyAction
+  | LeaveGameAction;
 
 export const createFlipAction = (tileIndex: number) => ({
   type: GameActionTypes.FLIP_TILE_AT_INDEX,
@@ -45,4 +50,8 @@ export const createToggleTimerAction = () => ({
 
 export const createToggleDifficultyAction = () => ({
   type: GameActionTypes.TOGGLE_DIFFICULTY
+});
+
+export const createLeaveGameAction = () => ({
+  type: GameActionTypes.LEAVE_GAME
 });

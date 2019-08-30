@@ -1,5 +1,13 @@
 import { GameAction, GameActionTypes } from './gameActions';
-import { flipTile, getGameStatus, getRandomMineIndexes, pauseTimer, startTimer, toggleDifficulty, toggleTimer } from './helpers';
+import {
+  flipTile,
+  getGameStatus,
+  getRandomMineIndexes,
+  pauseTimer,
+  startTimer,
+  toggleDifficulty,
+  toggleTimer
+} from './helpers';
 
 export enum GameStatus {
   MENU,
@@ -35,8 +43,8 @@ const initial: GameState = {
   neighbourMineCounts: {},
   rippleEffectDelays: {},
   timer: { isRunning: false, startedAt: 0, pausedAt: 0 },
-  difficulty: 1,
-  difficultyMineCounts: { 0: 25, 1: 35, 2: 45 }
+  difficulty: 0,
+  difficultyMineCounts: { 0: 25, 1: 30, 2: 40 }
 };
 
 const handleFlipTile = (
@@ -53,6 +61,23 @@ const handleFlipTile = (
   }: GameState,
   tileIndex: number
 ): GameState => {
+  if (
+    (status === GameStatus.STARTED && !timer.isRunning) ||
+    (status !== GameStatus.IDLE && status !== GameStatus.STARTED)
+  ) {
+    return {
+      gridWidth,
+      gridHeight,
+      difficulty,
+      difficultyMineCounts,
+      neighbourMineCounts,
+      mineIndexes,
+      status,
+      rippleEffectDelays,
+      timer
+    };
+  }
+
   if (status === GameStatus.IDLE) {
     mineIndexes = getRandomMineIndexes(
       gridWidth,
@@ -106,7 +131,13 @@ export default function gameReducer(
 ): GameState {
   switch (action.type) {
     case GameActionTypes.NEW_GAME:
-      return { ...state, status: GameStatus.IDLE };
+      return {
+        ...initial,
+        neighbourMineCounts: {},
+        rippleEffectDelays: {},
+        status: GameStatus.IDLE,
+        difficulty: state.difficulty
+      };
 
     case GameActionTypes.FLIP_TILE_AT_INDEX:
       return handleFlipTile(state, action.tileIndex);
@@ -118,6 +149,12 @@ export default function gameReducer(
       return {
         ...state,
         difficulty: toggleDifficulty(state.difficulty)
+      };
+
+    case GameActionTypes.LEAVE_GAME:
+      return {
+        ...state,
+        status: GameStatus.MENU
       };
     default:
       return state;

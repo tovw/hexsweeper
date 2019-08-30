@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { GameState } from '../state/gameReducer';
 import { color } from '../utils/color';
 
-const formatTime = (nanoSeconds: number) => {
+export const formatTime = (nanoSeconds: number) => {
   const seconds = Math.floor(nanoSeconds / 1000);
   const minutes = Math.floor(seconds / 60);
   const leftOverSeconds = seconds % 60;
@@ -34,7 +34,7 @@ export const Timer: FC = () => {
   }, [startedAt, isRunning]);
 
   return (
-    <div style={{ height: '100%' }}>
+    <div style={{ height: '100%', alignSelf: 'center' }}>
       <h2
         style={{
           fontFamily: 'digital',

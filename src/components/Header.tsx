@@ -4,7 +4,7 @@ import { color } from '../utils/color';
 
 const final = {
   letterSpacing: '1rem',
-  fontSize: 100,
+  fontSize: 80,
   color: color.primary
 };
 const variants = {
@@ -22,7 +22,7 @@ const anchorVariants = {
   initial: {
     opacity: 0,
     color: color.primary,
-    fontSize: '100px'
+    fontSize: 80
   },
   fadeIn: {
     opacity: 1,
@@ -48,11 +48,22 @@ export const Header: React.FC<{
   return (
     <motion.div
       style={{
-        margin: 'auto',
         textAlign: 'center',
         background: color.secondary,
         overflow: 'hidden',
-        userSelect: 'none'
+        userSelect: 'none',
+        position: 'absolute',
+        width: '100%',
+        top: 0,
+        left: 0
+      }}
+      key="Header"
+      exit={{
+        top: -500,
+
+        transition: {
+          duration: 0.7
+        }
       }}
     >
       {children.split('').map((c, i) => (
@@ -64,10 +75,10 @@ export const Header: React.FC<{
           key={i}
           style={{
             display: 'inline-block',
-            fontSize: '4rem',
+            fontSize: 60,
             fontFamily: 'Assasin',
             fontWeight: 'bold',
-            letterSpacing: '2rem'
+            letterSpacing: 10
           }}
         >
           {c}

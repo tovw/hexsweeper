@@ -5,26 +5,21 @@ import { PauseButton } from './PauseButton';
 import { TileCounter } from './TileCounter';
 import { Timer } from './Timer';
 
-//Difficulty
-//TilesLeft
-
-//Timer
-//OpenMenu
-
 export const GameInfo: FC = () => {
   return (
     <motion.div
       style={{
-        background: color.secondary,
-        height: '10vh',
+        background: color.background,
         padding: '5px',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignContent: 'center',
+        height: '100%'
       }}
       initial={{
-        x: 1000,
-        y: 0
+        x: 0,
+        y: -1000
       }}
       animate={{
         x: 0,

@@ -5,7 +5,6 @@ import { createFlipAction } from '../state/gameActions';
 import { GameState } from '../state/gameReducer';
 import { color, mineCountColorMap } from '../utils/color';
 import { toRoman } from '../utils/toRoman';
-import { viewBox } from './Board';
 import { Hexagon } from './Hexagon';
 
 interface TileProps {
@@ -22,15 +21,15 @@ const indexToGridCoordinateTransform = (x: number, y: number) => ({
 
 const wrapperVariants = {
   dealFrom: () => ({
-    translateX: viewBox.width / 2 - 300,
-    translateY: viewBox.height / 2 - 260
+    translateX: 0,
+    translateY: -500
   }),
   dealTo: (to: { translateX: number; translateY: number; index: number }) => {
     return {
       translateX: to.translateX,
       translateY: to.translateY,
       transition: {
-        delay: to.index / 100 + 0.5
+        delay: (130 - to.index) / 100 + 0.5
       }
     };
   }
