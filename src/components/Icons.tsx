@@ -25,9 +25,7 @@ export const PlayIcon: React.FC<MotionProps> = (props: MotionProps) => {
 };
 
 export const DifficultyHexes: React.FC<MotionProps> = props => {
-  const selected = useSelector<{ game: GameState }, 0 | 1 | 2>(
-    s => s.game.difficulty
-  );
+  const selected = useSelector<GameState, 0 | 1 | 2>(s => s.difficulty);
 
   const positions = {
     1: [{ x: -20, y: 20 }, { x: 5, y: 45 }, { x: 30, y: 70 }],

@@ -14,12 +14,8 @@ export const formatTime = (nanoSeconds: number) => {
 };
 
 export const Timer: FC = () => {
-  const startedAt = useSelector<{ game: GameState }, number>(
-    s => s.game.timer.startedAt
-  );
-  const isRunning = useSelector<{ game: GameState }, boolean>(
-    s => s.game.timer.isRunning
-  );
+  const startedAt = useSelector<GameState, number>(s => s.timer.startedAt);
+  const isRunning = useSelector<GameState, boolean>(s => s.timer.isRunning);
 
   const [elapsedTime, setElapsedTime] = useState(0);
 

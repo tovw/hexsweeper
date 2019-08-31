@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { GameState, GameStatus } from '../state/gameReducer';
@@ -5,11 +6,10 @@ import { Board } from './Board';
 import { GameInfo } from './GameInfo';
 import { Header } from './Header';
 import { Menu } from './Menu';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Results } from './Result';
 
 export const Game: FC = () => {
-  const status = useSelector<{ game: GameState }, number>(s => s.game.status);
+  const status = useSelector<GameState, number>(s => s.status);
 
   const over = status === GameStatus.WON || status === GameStatus.LOST;
   return (

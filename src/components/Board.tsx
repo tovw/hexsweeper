@@ -7,14 +7,10 @@ import { Tile } from './Tile';
 export const viewBox = { minX: -50, minY: -100, width: 3200, height: 3000 };
 
 export const Board: FC = () => {
-  const gridHeight = useSelector<{ game: GameState }, number>(
-    s => s.game.gridHeight
-  );
-  const gridWidth = useSelector<{ game: GameState }, number>(
-    s => s.game.gridWidth
-  );
-  const isPaused = useSelector<{ game: GameState }, boolean>(s => {
-    return !s.game.timer.isRunning && s.game.status === GameStatus.STARTED;
+  const gridHeight = useSelector<GameState, number>(s => s.gridHeight);
+  const gridWidth = useSelector<GameState, number>(s => s.gridWidth);
+  const isPaused = useSelector<GameState, boolean>(s => {
+    return !s.timer.isRunning && s.status === GameStatus.STARTED;
   });
 
   const rows = Array.from({ length: gridHeight * gridWidth });

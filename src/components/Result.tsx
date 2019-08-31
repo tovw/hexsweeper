@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
-import { color } from '../utils/color';
-
-import { BackToMenu } from './BackToMenu';
 import { useSelector } from 'react-redux';
 import { GameState, Timer } from '../state/gameReducer';
+import { color } from '../utils/color';
+import { BackToMenu } from './BackToMenu';
 import { formatTime } from './Timer';
 
 const ResultMessage: FC = ({ children }) => {
@@ -24,7 +23,7 @@ const ResultMessage: FC = ({ children }) => {
 };
 
 export const Results: FC<{ isWon: boolean }> = ({ isWon }) => {
-  const timer = useSelector<{ game: GameState }, Timer>(s => s.game.timer);
+  const timer = useSelector<GameState, Timer>(s => s.timer);
 
   const time = formatTime(timer.pausedAt - timer.startedAt);
 

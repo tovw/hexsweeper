@@ -88,13 +88,12 @@ const countTextVariants = {
 };
 
 export const Tile: FC<TileProps> = ({ x, y, index }) => {
-  const neighbouringMineCount = useSelector<
-    { game: GameState },
-    number | undefined
-  >(s => s.game.neighbourMineCounts[index]);
+  const neighbouringMineCount = useSelector<GameState, number | undefined>(
+    s => s.neighbourMineCounts[index]
+  );
 
-  const rippleDelay = useSelector<{ game: GameState }, number | undefined>(
-    s => s.game.rippleEffectDelays[index]
+  const rippleDelay = useSelector<GameState, number | undefined>(
+    s => s.rippleEffectDelays[index]
   );
 
   const dispatch = useDispatch();

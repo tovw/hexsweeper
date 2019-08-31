@@ -1,20 +1,18 @@
+import { motion } from 'framer-motion';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createToggleTimerAction } from '../state/gameActions';
 import { GameState, GameStatus } from '../state/gameReducer';
 import { color } from '../utils/color';
 import { Hexagon } from './Hexagon';
-import { motion } from 'framer-motion';
 
 export const PauseButton: FC = () => {
   const dispatch = useDispatch();
   const toggleTimer = () => dispatch(createToggleTimerAction());
 
-  const isRunning = useSelector<{ game: GameState }, boolean>(
-    s => s.game.timer.isRunning
-  );
-  const isGameStarted = useSelector<{ game: GameState }, boolean>(
-    s => s.game.status === GameStatus.STARTED
+  const isRunning = useSelector<GameState, boolean>(s => s.timer.isRunning);
+  const isGameStarted = useSelector<GameState, boolean>(
+    s => s.status === GameStatus.STARTED
   );
 
   return (

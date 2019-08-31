@@ -17,9 +17,7 @@ const getNonMinesLeft = ({
   difficultyMineCounts[difficulty];
 
 export const TileCounter: FC = () => {
-  const nonMinesLeft = useSelector<{ game: GameState }, number>(s =>
-    getNonMinesLeft(s.game)
-  );
+  const nonMinesLeft = useSelector<GameState, number>(getNonMinesLeft);
   return (
     <svg
       viewBox="0 0 300 260"
