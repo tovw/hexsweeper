@@ -23,6 +23,8 @@ export interface Timer {
   pausedAt: number;
 }
 
+export type Difficulty = 0 | 1 | 2;
+
 export interface GameState {
   gridWidth: number;
   gridHeight: number;
@@ -31,8 +33,8 @@ export interface GameState {
   neighbourMineCounts: Record<number, number>;
   rippleEffectDelays: Record<number, number>;
   timer: Timer;
-  difficulty: 0 | 1 | 2;
-  difficultyMineCounts: Record<0 | 1 | 2, number>;
+  difficulty: Difficulty;
+  difficultyMineCounts: Record<Difficulty, number>;
 }
 
 const initial: GameState = {

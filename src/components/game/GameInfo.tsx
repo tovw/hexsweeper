@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { FC } from 'react';
-import { color } from '../utils/color';
+import { color } from '../../utils/color';
 import { PauseButton } from './PauseButton';
 import { TileCounter } from './TileCounter';
 import { Timer } from './Timer';

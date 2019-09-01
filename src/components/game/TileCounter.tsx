@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { GameState } from '../state/gameReducer';
-import { color } from '../utils/color';
-import { Hexagon } from './Hexagon';
+import { GameState } from '../../state/gameReducer';
+import { color } from '../../utils/color';
+import { Hexagon } from '../svgShapes/Hexagon';
 
 const getNonMinesLeft = ({
   gridWidth,
@@ -17,7 +17,7 @@ const getNonMinesLeft = ({
   difficultyMineCounts[difficulty];
 
 export const TileCounter: FC = () => {
-  const nonMinesLeft = useSelector<GameState, number>(getNonMinesLeft);
+  const nonMinesLeft = useSelector(getNonMinesLeft);
   return (
     <svg
       viewBox="0 0 300 260"
@@ -32,8 +32,8 @@ export const TileCounter: FC = () => {
           x: 150,
           y: 100,
           textAnchor: 'middle',
-          fill: color.background,
-          stroke: color.background,
+          fill: color.secondary,
+
           fontSize: 70,
           userSelect: 'none',
           fontFamily: 'squreSans',

@@ -1,4 +1,4 @@
-import { GameStatus, Timer } from './gameReducer';
+import { Difficulty, GameStatus, Timer } from './gameReducer';
 
 export const getNeighbours = (
   gridWidth: number,
@@ -190,7 +190,7 @@ export const assertNever = (x: never): never => {
   throw new Error('Invalid Action: ' + x);
 };
 
-export const toggleDifficulty = (difficulty: 0 | 1 | 2): 0 | 1 | 2 => {
+export const toggleDifficulty = (difficulty: Difficulty): Difficulty => {
   if (difficulty === 0) return 1;
   if (difficulty === 1) return 2;
   return 0;

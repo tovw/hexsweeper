@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createFlipAction } from '../state/gameActions';
-import { GameState } from '../state/gameReducer';
-import { color, mineCountColorMap } from '../utils/color';
-import { toRoman } from '../utils/toRoman';
-import { Hexagon } from './Hexagon';
+import { createFlipAction } from '../../state/gameActions';
+import { GameState } from '../../state/gameReducer';
+import { color, mineCountColorMap } from '../../utils/color';
+import { toRoman } from '../../utils/toRoman';
+import { Hexagon } from '../svgShapes/Hexagon';
 
 interface TileProps {
   x: number;
@@ -88,12 +88,12 @@ const countTextVariants = {
 };
 
 export const Tile: FC<TileProps> = ({ x, y, index }) => {
-  const neighbouringMineCount = useSelector<GameState, number | undefined>(
-    s => s.neighbourMineCounts[index]
+  const neighbouringMineCount = useSelector(
+    (s: GameState) => s.neighbourMineCounts[index]
   );
 
-  const rippleDelay = useSelector<GameState, number | undefined>(
-    s => s.rippleEffectDelays[index]
+  const rippleDelay = useSelector(
+    (s: GameState) => s.rippleEffectDelays[index]
   );
 
   const dispatch = useDispatch();

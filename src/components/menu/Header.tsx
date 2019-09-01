@@ -1,6 +1,6 @@
 import { motion, useAnimation } from 'framer-motion';
 import * as React from 'react';
-import { color } from '../utils/color';
+import { color } from '../../utils/color';
 
 const final = {
   letterSpacing: '1rem',

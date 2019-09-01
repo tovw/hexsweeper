@@ -2,11 +2,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { GameState, GameStatus } from '../state/gameReducer';
-import { Board } from './Board';
-import { GameInfo } from './GameInfo';
-import { Header } from './Header';
-import { Menu } from './Menu';
-import { Results } from './Result';
+import { Board } from './game/Board';
+import { GameInfo } from './game/GameInfo';
+import { Results } from './game/Result';
+import { Header } from './menu/Header';
+import { Menu } from './menu/Menu';
 
 export const Game: FC = () => {
   const status = useSelector<GameState, number>(s => s.status);
