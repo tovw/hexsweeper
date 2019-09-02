@@ -9,9 +9,10 @@ import { Header } from './menu/Header';
 import { Menu } from './menu/Menu';
 
 export const Game: FC = () => {
-  const status = useSelector<GameState, number>(s => s.status);
+  const status = useSelector((s: GameState) => s.status);
 
-  const over = status === GameStatus.WON || status === GameStatus.LOST;
+  const isMenu = status === GameStatus.MENU;
+  const isOver = status === GameStatus.WON || status === GameStatus.LOST;
   return (
     <motion.div
       style={{
@@ -20,20 +21,18 @@ export const Game: FC = () => {
         margin: '0 auto',
         overflow: 'hidden'
       }}
-      animate={over ? { maxWidth: '500px' } : { maxWidth: '600px' }}
+      animate={isOver ? { maxWidth: '500px' } : { maxWidth: '600px' }}
     >
       <motion.div
         style={{ height: '10vh', position: 'relative', marginBottom: '15px' }}
-        animate={over ? { height: '25vh' } : { height: '10vh' }}
+        animate={isOver ? { height: '25vh' } : { height: '10vh' }}
       >
-        <AnimatePresence>
-          {status === GameStatus.MENU && <Header>HEXES</Header>}
-        </AnimatePresence>
-        {status !== GameStatus.MENU && !over && <GameInfo />}
-        {over && <Results isWon={status === GameStatus.WON} />}
+        <AnimatePresence>{isMenu && <Header>HEXES</Header>}</AnimatePresence>
+        {!isMenu && !isOver && <GameInfo />}
+        {isOver && <Results isWon={status === GameStatus.WON} />}
       </motion.div>
-      {status === GameStatus.MENU && <Menu />}
-      {status !== GameStatus.MENU && <Board />}
+      {isMenu && <Menu />}
+      {!isMenu && <Board />}
     </motion.div>
   );
 };

@@ -1,4 +1,9 @@
-import { Difficulty, GameStatus, Timer } from './gameReducer';
+import {
+  Difficulty,
+  GameStatus,
+  NeighbourMineCount,
+  Timer
+} from './gameReducer';
 
 export const getNeighbours = (
   gridWidth: number,
@@ -69,16 +74,16 @@ export const flipTile = (
   mineIndexes: number[],
   gridWidth: number,
   gridHeight: number,
-  neighbourMineCounts: Record<number, number>,
+  neighbourMineCounts: Record<number, NeighbourMineCount>,
   rippleEffectDelays: Record<number, number>
 ): {
-  neighbourMineCounts: Record<number, number>;
+  neighbourMineCounts: Record<number, NeighbourMineCount>;
   rippleEffectDelays: Record<number, number>;
 } => {
   if (mineIndexes.includes(flipIndex)) {
     return {
       neighbourMineCounts: mineIndexes.reduce((acc, val) => {
-        acc[val] = 7;
+        acc[val] = 'MINE';
         return acc;
       }, neighbourMineCounts),
       rippleEffectDelays
@@ -87,22 +92,33 @@ export const flipTile = (
 
   const neighbours = getNeighbours(gridWidth, gridHeight, flipIndex);
   const neigbourMineCount = intersection(neighbours, mineIndexes).length;
-  neighbourMineCounts[flipIndex] = neigbourMineCount;
-  const distances = [[flipIndex]];
+  neighbourMineCounts[flipIndex] = neigbourMineCount as NeighbourMineCount;
+  rippleEffectDelays[flipIndex] = 0;
 
   if (neigbourMineCount === 0) {
-    distances.push([
-      ...difference(neighbours, Object.keys(neighbourMineCounts).map(i => +i))
-    ]);
+    let distance = 1;
+    rippleEffectDelays = difference(
+      neighbours,
+      Object.keys(neighbourMineCounts).map(i => +i)
+    ).reduce((acc, cur) => {
+      acc[cur] = distance;
+      return acc;
+    }, rippleEffectDelays);
 
     let front = [...neighbours];
     let nextLayer: number[] = [];
     while (front.length || nextLayer.length) {
       if (!front.length) {
         front = [...nextLayer];
-        distances.push([...nextLayer]);
+        distance += 1;
+        rippleEffectDelays = nextLayer.reduce((acc, cur) => {
+          acc[cur] = distance;
+          return acc;
+        }, rippleEffectDelays);
+
         nextLayer = [];
       }
+
       const current = front.pop()!;
       if (neighbourMineCounts[current] !== undefined) {
         continue;
@@ -112,7 +128,9 @@ export const flipTile = (
         currentNeighbours,
         mineIndexes
       ).length;
-      neighbourMineCounts[current] = currentNeighbourMineCount;
+      neighbourMineCounts[
+        current
+      ] = currentNeighbourMineCount as NeighbourMineCount;
       if (!currentNeighbourMineCount) {
         nextLayer = nextLayer.concat(
           difference(currentNeighbours, [
@@ -125,20 +143,6 @@ export const flipTile = (
     }
   }
 
-  rippleEffectDelays = distances.reduce(
-    (acc, arr, i) => ({
-      ...acc,
-      ...arr.reduce(
-        (acc, val) => {
-          acc[val] = i;
-          return acc;
-        },
-        {} as Record<number, number>
-      )
-    }),
-    rippleEffectDelays
-  );
-
   return { neighbourMineCounts, rippleEffectDelays };
 };
 
@@ -146,7 +150,7 @@ export const getGameStatus = (
   gridWidth: number,
   gridHeight: number,
   mineIndexes: number[],
-  neigbourMineCount: Record<number, number>,
+  neigbourMineCount: Record<number, NeighbourMineCount>,
   lastFlippedIndex: number
 ) => {
   if (mineIndexes.includes(lastFlippedIndex)) {

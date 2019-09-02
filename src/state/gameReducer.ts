@@ -24,17 +24,18 @@ export interface Timer {
 }
 
 export type Difficulty = 0 | 1 | 2;
+export type NeighbourMineCount = undefined | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 'MINE';
 
 export interface GameState {
   gridWidth: number;
   gridHeight: number;
   mineIndexes: number[];
   status: GameStatus;
-  neighbourMineCounts: Record<number, number>;
+  neighbourMineCounts: Record<number, NeighbourMineCount>;
   rippleEffectDelays: Record<number, number>;
   timer: Timer;
-  difficulty: Difficulty;
   difficultyMineCounts: Record<Difficulty, number>;
+  difficulty: Difficulty;
 }
 
 const initial: GameState = {

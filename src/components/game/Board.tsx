@@ -9,7 +9,6 @@ export const viewBox = { minX: -50, minY: -100, width: 3200, height: 3000 };
 const variants = {
   initial: {
     width: '100%',
-    maxWidth: '50rem',
     filter: 'blur(0px) grayscale(0%)'
   },
   paused: {
