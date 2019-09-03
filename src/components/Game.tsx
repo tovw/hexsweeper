@@ -15,23 +15,25 @@ export const Game: FC = () => {
   const isOver = status === GameStatus.WON || status === GameStatus.LOST;
   return (
     <motion.div
-      style={{
-        maxWidth: '600px',
+      initial={{
+        maxWidth: 600,
         maxHeight: '100vh',
         margin: '0 auto',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        minWidth: '350px'
       }}
-      animate={isOver ? { maxWidth: '500px' } : { maxWidth: '600px' }}
+      animate={{ maxWidth: isOver ? 500 : 600 }}
     >
       <motion.div
-        style={{ height: '10vh', position: 'relative', marginBottom: '15px' }}
-        animate={isOver ? { height: '25vh' } : { height: '10vh' }}
+        initial={{ height: 100, position: 'relative', marginBottom: 15 }}
+        animate={{ height: isOver ? 150 : 100 }}
       >
         <AnimatePresence>{isMenu && <Header>HEXES</Header>}</AnimatePresence>
         {!isMenu && !isOver && <GameInfo />}
         {isOver && <Results isWon={status === GameStatus.WON} />}
       </motion.div>
-      {isMenu && <Menu />}
+
+      <AnimatePresence>{isMenu && <Menu />}</AnimatePresence>
       {!isMenu && <Board />}
     </motion.div>
   );

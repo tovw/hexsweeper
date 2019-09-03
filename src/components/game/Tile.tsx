@@ -21,14 +21,16 @@ const indexToGridCoordinateTransform = (x: number, y: number) => ({
 
 const wrapperVariants = {
   dealFrom: () => ({
-    translateX: 0,
-    translateY: -500,
-    scale: 1
+    translateX: -600,
+    translateY: -600,
+    scale: 2
   }),
   dealTo: (to: { translateX: number; translateY: number; index: number }) => {
     return {
       translateX: to.translateX,
       translateY: to.translateY,
+      scale: 1,
+
       transition: {
         delay: (130 - to.index) / 100 + 0.5
       }

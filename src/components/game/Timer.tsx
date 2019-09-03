@@ -14,17 +14,26 @@ export const formatTime = (nanoSeconds: number) => {
 };
 
 export const DigitalClock: FC<{ time: string }> = ({ time }) => (
-  <h2
+  <div
     style={{
-      fontFamily: 'digital',
-      fontSize: 70,
-      margin: '0 auto',
-      userSelect: 'none',
-      color: color.primary
+      color: color.primary,
+      width: '60%',
+      justifySelf: 'center',
+      alignSelf: 'center',
+      textAlign: 'center'
     }}
   >
-    {time}
-  </h2>
+    <h2
+      style={{
+        userSelect: 'none',
+        fontFamily: 'digital',
+        fontSize: 70,
+        margin: '0 0'
+      }}
+    >
+      {time}
+    </h2>
+  </div>
 );
 
 export const Timer: FC = () => {

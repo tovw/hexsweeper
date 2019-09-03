@@ -7,6 +7,7 @@ const final = {
   fontSize: 80,
   color: color.primary
 };
+
 const variants = {
   initial: (index: number) => ({
     x: index < 2 ? -1000 : 1000
@@ -62,7 +63,8 @@ export const Header: React.FC<{
         top: -500,
 
         transition: {
-          duration: 0.7
+          type: 'spring',
+          stiffness: 20
         }
       }}
     >

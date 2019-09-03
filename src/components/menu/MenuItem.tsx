@@ -2,7 +2,11 @@ import { motion, MotionProps } from 'framer-motion';
 import React, { FC } from 'react';
 import { color } from '../../utils/color';
 import { HexagonUp } from '../svgShapes/Hexagon';
-import { Coord } from './Menu';
+
+export interface Coord {
+  x: number;
+  y: number;
+}
 
 interface MenuItemProps {
   inFrom: Coord;
@@ -26,7 +30,7 @@ const menuItemVariants = {
   out: ({ inFrom }: { to: Coord; inFrom: Coord }) => ({
     translateX: inFrom.x,
     translateY: inFrom.y,
-    transition: { duration: 0.5 }
+    transition: { duration: 0.3 }
   }),
   hover: () => ({
     scale: 1.1
@@ -46,9 +50,7 @@ export const MenuItem: FC<MenuItemProps & MotionProps> = ({
     <motion.g
       variants={menuItemVariants}
       custom={{ inFrom, to }}
-      animate={'in'}
       exit={'out'}
-      initial={'initial'}
       whileHover={'hover'}
       whileTap={'tap'}
       onClick={onClick}

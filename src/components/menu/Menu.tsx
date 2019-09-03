@@ -5,6 +5,7 @@ import {
   createNewGameAction,
   createToggleDifficultyAction
 } from '../../state/gameActions';
+import { GithubLogo } from '../svgShapes/GithubLogo';
 import { DifficultyIcon } from './DifficultyIcon';
 import { MenuItem } from './MenuItem';
 import { StartGameIcon } from './StartGameIcon';
@@ -28,6 +29,9 @@ export const Menu: FC = () => {
         originY: 0.5,
         scale: 1
       }}
+      initial="initial"
+      animate="in"
+      exit="out"
     >
       <MenuItem
         inFrom={{ x: -300, y: 150 }}
@@ -41,11 +45,18 @@ export const Menu: FC = () => {
         Icon={DifficultyIcon}
         onClick={toggleDifficulty}
       />
+      <a
+        href="https://github.com/tovw/hexsweeper"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <MenuItem
+          inFrom={{ x: 270, y: 810 }}
+          to={{ x: 270, y: 410 }}
+          Icon={GithubLogo}
+          onClick={() => null}
+        />
+      </a>
     </motion.svg>
   );
 };
-
-export interface Coord {
-  x: number;
-  y: number;
-}

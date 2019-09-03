@@ -30,6 +30,7 @@ export const Board: FC = () => {
       variants={variants}
       initial="initial"
       animate={isPaused ? 'paused' : 'initial'}
+      exit="out"
     >
       {Array.from({ length: gridHeight * gridWidth }).map((_, i) => {
         return (

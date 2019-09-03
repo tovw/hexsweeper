@@ -19,11 +19,15 @@ export const GameInfo: FC = () => {
       }}
       initial={{
         x: 0,
-        y: -1000
+        y: -500
       }}
       animate={{
         x: 0,
-        y: 0
+        y: 0,
+        transition: {
+          type: 'spring',
+          stiffness: 20
+        }
       }}
     >
       <TileCounter></TileCounter>
