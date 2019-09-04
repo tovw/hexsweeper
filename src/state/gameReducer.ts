@@ -1,8 +1,8 @@
 import { GameAction, GameActionTypes } from './gameActions';
 import {
   flipTile,
+  generateMineIndexes,
   getGameStatus,
-  getRandomMineIndexes,
   pauseTimer,
   startTimer,
   toggleDifficulty,
@@ -24,14 +24,16 @@ export interface Timer {
 }
 
 export type Difficulty = 0 | 1 | 2;
-export type NeighbourMineCount = undefined | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 'MINE';
+
+//unopened, neighbour count, mine
+export type TileState = undefined | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 'MINE';
 
 export interface GameState {
   gridWidth: number;
   gridHeight: number;
   mineIndexes: number[];
   status: GameStatus;
-  neighbourMineCounts: Record<number, NeighbourMineCount>;
+  tileStates: Record<number, TileState>;
   rippleEffectDelays: Record<number, number>;
   timer: Timer;
   difficultyMineCounts: Record<Difficulty, number>;
@@ -43,7 +45,7 @@ const initial: GameState = {
   gridHeight: 10,
   mineIndexes: [],
   status: GameStatus.MENU,
-  neighbourMineCounts: {},
+  tileStates: {},
   rippleEffectDelays: {},
   timer: { isRunning: false, startedAt: 0, pausedAt: 0 },
   difficulty: 0,
@@ -56,7 +58,7 @@ const handleFlipTile = (
     gridHeight,
     difficulty,
     difficultyMineCounts,
-    neighbourMineCounts,
+    tileStates: neighbourMineCounts,
     mineIndexes,
     status,
     rippleEffectDelays,
@@ -73,7 +75,7 @@ const handleFlipTile = (
       gridHeight,
       difficulty,
       difficultyMineCounts,
-      neighbourMineCounts,
+      tileStates: neighbourMineCounts,
       mineIndexes,
       status,
       rippleEffectDelays,
@@ -82,7 +84,7 @@ const handleFlipTile = (
   }
 
   if (status === GameStatus.IDLE) {
-    mineIndexes = getRandomMineIndexes(
+    mineIndexes = generateMineIndexes(
       gridWidth,
       gridHeight,
       difficultyMineCounts[difficulty],
@@ -119,7 +121,7 @@ const handleFlipTile = (
     gridWidth,
     gridHeight,
     mineIndexes,
-    neighbourMineCounts: newCounts,
+    tileStates: newCounts,
     status,
     rippleEffectDelays: newRipples,
     timer,
@@ -136,7 +138,7 @@ export default function gameReducer(
     case GameActionTypes.NEW_GAME:
       return {
         ...initial,
-        neighbourMineCounts: {},
+        tileStates: {},
         rippleEffectDelays: {},
         status: GameStatus.IDLE,
         difficulty: state.difficulty
@@ -159,6 +161,7 @@ export default function gameReducer(
         ...state,
         status: GameStatus.MENU
       };
+
     default:
       return state;
   }

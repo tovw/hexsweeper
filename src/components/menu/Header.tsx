@@ -61,7 +61,6 @@ export const Header: React.FC<{
       key="Header"
       exit={{
         top: -500,
-
         transition: {
           type: 'spring',
           stiffness: 20

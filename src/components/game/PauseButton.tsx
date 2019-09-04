@@ -29,50 +29,46 @@ export const PauseButton: FC = () => {
   );
 
   return (
-    <svg
-      viewBox="0 0 300 260"
-      preserveAspectRatio="xMinYMin meet"
-      style={{
-        height: '100%'
-      }}
-    >
-      {isGameStarted && (
-        <motion.g
-          onClick={toggleTimer}
-          style={{
-            cursor: 'pointer'
-          }}
-          initial="initial"
-          whileHover="hover"
-        >
-          <Hexagon style={{ fill: color.primary }} />
-          {isRunning ? (
-            <motion.g>
-              <motion.rect
-                variants={pauseBarVariants}
-                custom={100}
-              ></motion.rect>
-              <motion.rect
-                variants={pauseBarVariants}
-                custom={160}
-              ></motion.rect>
-            </motion.g>
-          ) : (
-            <motion.polygon
-              points="120,80 220,130 120,180"
-              fill={color.background}
-              animate={{
-                scale: [1, 1.3],
-                fill: [color.background, color.secondary],
-                transition: {
-                  duration: 1.2,
-                  yoyo: Infinity
-                }
-              }}
-            ></motion.polygon>
-          )}
-        </motion.g>
-      )}
-    </svg>
+    <div style={{ flex: '0 1 20%' }}>
+      <svg
+        viewBox="0 0 300 260"
+        preserveAspectRatio="xMinYMin meet"
+        style={{
+          height: '80%'
+        }}
+      >
+        {isGameStarted && (
+          <motion.g
+            onClick={toggleTimer}
+            style={{
+              cursor: 'pointer'
+            }}
+            initial="initial"
+            whileHover="hover"
+          >
+            <Hexagon style={{ fill: color.primary }} />
+            {isRunning ? (
+              <motion.g>
+                <motion.rect variants={pauseBarVariants} custom={100} />
+                <motion.rect variants={pauseBarVariants} custom={160} />
+              </motion.g>
+            ) : (
+              <motion.polygon
+                points="120,80 220,130 120,180"
+                fill={color.background}
+                animate={{
+                  scale: [1, 1.3],
+                  fill: [color.background, color.secondary],
+                  transition: {
+                    duration: 1.2,
+                    yoyo: Infinity
+                  }
+                }}
+              />
+            )}
+          </motion.g>
+        )}
+      </svg>
+    </div>
   );
 };

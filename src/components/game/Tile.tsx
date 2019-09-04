@@ -2,22 +2,35 @@ import { motion } from 'framer-motion';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createFlipAction } from '../../state/gameActions';
-import { GameState, NeighbourMineCount } from '../../state/gameReducer';
+import { GameState, TileState } from '../../state/gameReducer';
 import { color, mineCountColorMap } from '../../utils/color';
-import { toRoman } from '../../utils/toRoman';
+import { Coord } from '../menu/MenuItem';
 import { Hexagon } from '../svgShapes/Hexagon';
-
-interface TileProps {
-  x: number;
-  y: number;
-  index: number;
-}
 
 //flat top 300*260 hexagon
 const indexToGridCoordinateTransform = (x: number, y: number) => ({
   translateX: 235 * x,
   translateY: y * 275 + (x % 2 === 0 ? 70 : -70)
 });
+
+const toRoman = (integer: number): string => {
+  switch (integer) {
+    case 1:
+      return 'I';
+    case 2:
+      return 'II';
+    case 3:
+      return 'III';
+    case 4:
+      return 'IV';
+    case 5:
+      return 'V';
+    case 6:
+      return 'VI';
+    default:
+      return '';
+  }
+};
 
 const wrapperVariants = {
   dealFrom: () => ({
@@ -44,7 +57,7 @@ const wrapperVariants = {
   })
 };
 
-const hexagonVariants: Record<NeighbourMineCount & 'initial', unknown> = {
+const hexagonVariants: Record<TileState & 'initial', unknown> = {
   initial: { fill: color.primary, opacity: 1 },
   0: (delay: number) => ({
     opacity: 0,
@@ -102,10 +115,12 @@ const countTextVariants = {
   })
 };
 
+interface TileProps extends Coord {
+  index: number;
+}
+
 export const Tile: FC<TileProps> = ({ x, y, index }) => {
-  const neighbouringMineCount = useSelector(
-    (s: GameState) => s.neighbourMineCounts[index]
-  );
+  const tileState = useSelector((s: GameState) => s.tileStates[index]);
 
   const rippleDelay = useSelector(
     (s: GameState) => s.rippleEffectDelays[index]
@@ -123,16 +138,16 @@ export const Tile: FC<TileProps> = ({ x, y, index }) => {
         ...indexToGridCoordinateTransform(x, y),
         index
       }}
-      whileHover={neighbouringMineCount === undefined ? 'hover' : 'dealtTo'}
+      whileHover={tileState === undefined ? 'hover' : 'dealtTo'}
       style={{
-        cursor: neighbouringMineCount === undefined ? 'pointer' : 'default'
+        cursor: tileState === undefined ? 'pointer' : 'default'
       }}
       onClick={flip}
     >
       <Hexagon
         variants={hexagonVariants}
         custom={rippleDelay}
-        animate={`${neighbouringMineCount}`}
+        animate={`${tileState}`}
         initial="initial"
       ></Hexagon>
 
@@ -144,11 +159,9 @@ export const Tile: FC<TileProps> = ({ x, y, index }) => {
         variants={countTextVariants}
         custom={rippleDelay}
         initial="hidden"
-        animate={neighbouringMineCount ? 'visible' : 'hidden'}
+        animate={tileState ? 'visible' : 'hidden'}
       >
-        {!!neighbouringMineCount &&
-          neighbouringMineCount !== 'MINE' &&
-          toRoman(neighbouringMineCount)}
+        {!!tileState && tileState !== 'MINE' && toRoman(tileState)}
       </motion.text>
     </motion.g>
   );

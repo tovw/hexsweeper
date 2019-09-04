@@ -5,10 +5,11 @@ import {
   createNewGameAction,
   createToggleDifficultyAction
 } from '../../state/gameActions';
+import { color } from '../../utils/color';
 import { GithubLogo } from '../svgShapes/GithubLogo';
+import { PlayIcon } from '../svgShapes/PlayIcon';
 import { DifficultyIcon } from './DifficultyIcon';
 import { MenuItem } from './MenuItem';
-import { StartGameIcon } from './StartGameIcon';
 
 export const Menu: FC = () => {
   const dispatch = useDispatch();
@@ -36,7 +37,18 @@ export const Menu: FC = () => {
       <MenuItem
         inFrom={{ x: -300, y: 150 }}
         to={{ x: 115, y: 150 }}
-        Icon={StartGameIcon}
+        Icon={() => (
+          <PlayIcon
+            initial={{
+              scale: 0.3,
+              translateX: 0,
+              translateY: 0,
+              fill: color.secondary,
+              strokeWidth: '20px',
+              stroke: color.text
+            }}
+          ></PlayIcon>
+        )}
         onClick={newGame}
       />
       <MenuItem
