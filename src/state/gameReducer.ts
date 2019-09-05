@@ -58,7 +58,7 @@ const handleFlipTile = (
     gridHeight,
     difficulty,
     difficultyMineCounts,
-    tileStates: neighbourMineCounts,
+    tileStates,
     mineIndexes,
     status,
     rippleEffectDelays,
@@ -75,7 +75,7 @@ const handleFlipTile = (
       gridHeight,
       difficulty,
       difficultyMineCounts,
-      tileStates: neighbourMineCounts,
+      tileStates,
       mineIndexes,
       status,
       rippleEffectDelays,
@@ -93,15 +93,12 @@ const handleFlipTile = (
     timer = startTimer();
   }
 
-  const {
-    neighbourMineCounts: newCounts,
-    rippleEffectDelays: newRipples
-  } = flipTile(
+  const { tileStates: newStates, rippleEffectDelays: newRipples } = flipTile(
     tileIndex,
     mineIndexes,
     gridWidth,
     gridHeight,
-    neighbourMineCounts,
+    tileStates,
     rippleEffectDelays
   );
 
@@ -109,7 +106,7 @@ const handleFlipTile = (
     gridWidth,
     gridHeight,
     mineIndexes,
-    newCounts,
+    newStates,
     tileIndex
   );
 
@@ -121,7 +118,7 @@ const handleFlipTile = (
     gridWidth,
     gridHeight,
     mineIndexes,
-    tileStates: newCounts,
+    tileStates: newStates,
     status,
     rippleEffectDelays: newRipples,
     timer,

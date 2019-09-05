@@ -64,13 +64,13 @@ export const generateMineIndexes = (
 };
 
 const revealMines = (
-  neighbourMineCounts: Record<number, TileState>,
+  tileStates: Record<number, TileState>,
   mineIndexes: number[]
 ) =>
   mineIndexes.reduce((acc, val) => {
     acc[val] = 'MINE';
     return acc;
-  }, neighbourMineCounts);
+  }, tileStates);
 
 const setDistances = (
   delays: Record<number, number>,
@@ -86,11 +86,11 @@ const flipAllConnectedEmpties = (
   mineIndexes: number[],
   gridWidth: number,
   gridHeight: number,
-  neighbourMineCounts: Record<number, TileState>,
+  tileStates: Record<number, TileState>,
   rippleEffectDelays: Record<number, number>,
   initialNeighbours: number[]
 ): {
-  neighbourMineCounts: Record<number, TileState>;
+  tileStates: Record<number, TileState>;
   rippleEffectDelays: Record<number, number>;
 } => {
   let distance = 1;
@@ -106,7 +106,7 @@ const flipAllConnectedEmpties = (
     }
 
     const current = front.pop()!;
-    if (neighbourMineCounts[current] !== undefined) {
+    if (tileStates[current] !== undefined) {
       continue;
     }
     const currentNeighbours = getAdjacentIndexes(
@@ -118,18 +118,19 @@ const flipAllConnectedEmpties = (
       currentNeighbours,
       mineIndexes
     ).length;
-    neighbourMineCounts[current] = currentNeighbourMineCount as TileState;
+
+    tileStates[current] = currentNeighbourMineCount as TileState;
     if (!currentNeighbourMineCount) {
       nextLayer = nextLayer.concat(
         difference(currentNeighbours, [
-          ...Object.keys(neighbourMineCounts).map(i => +i),
+          ...Object.keys(tileStates).map(i => +i),
           ...front,
           ...nextLayer
         ])
       );
     }
   }
-  return { neighbourMineCounts, rippleEffectDelays };
+  return { tileStates, rippleEffectDelays };
 };
 
 export const flipTile = (
@@ -137,31 +138,31 @@ export const flipTile = (
   mineIndexes: number[],
   gridWidth: number,
   gridHeight: number,
-  neighbourMineCounts: Record<number, TileState>,
+  tileStates: Record<number, TileState>,
   rippleEffectDelays: Record<number, number>
 ): {
-  neighbourMineCounts: Record<number, TileState>;
+  tileStates: Record<number, TileState>;
   rippleEffectDelays: Record<number, number>;
 } => {
   if (mineIndexes.includes(flipIndex)) {
     return {
-      neighbourMineCounts: revealMines(neighbourMineCounts, mineIndexes),
+      tileStates: revealMines(tileStates, mineIndexes),
       rippleEffectDelays
     };
   }
 
-  const neighbours = getAdjacentIndexes(gridWidth, gridHeight, flipIndex);
-  const neigbourMineCount = intersection(neighbours, mineIndexes).length;
-  neighbourMineCounts[flipIndex] = neigbourMineCount as TileState;
+  const adjacentIndexes = getAdjacentIndexes(gridWidth, gridHeight, flipIndex);
+  const adjacentMineCount = intersection(adjacentIndexes, mineIndexes).length;
+  tileStates[flipIndex] = adjacentMineCount as TileState;
   rippleEffectDelays[flipIndex] = 0;
 
-  if (neigbourMineCount !== 0) {
-    return { neighbourMineCounts, rippleEffectDelays };
+  if (adjacentMineCount !== 0) {
+    return { tileStates, rippleEffectDelays };
   }
 
   rippleEffectDelays = setDistances(
     rippleEffectDelays,
-    difference(neighbours, Object.keys(neighbourMineCounts).map(i => +i)),
+    difference(adjacentIndexes, Object.keys(tileStates).map(i => +i)),
     1
   );
 
@@ -169,9 +170,9 @@ export const flipTile = (
     mineIndexes,
     gridWidth,
     gridHeight,
-    neighbourMineCounts,
+    tileStates,
     rippleEffectDelays,
-    neighbours
+    adjacentIndexes
   );
 };
 
