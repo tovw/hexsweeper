@@ -36,7 +36,7 @@ const menuItemVariants = {
     scale: 1.1
   }),
   tap: () => ({
-    scale: 0.9
+    scale: 0.95
   })
 };
 
